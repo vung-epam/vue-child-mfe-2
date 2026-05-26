@@ -15,14 +15,13 @@ const search = ref('');
 const { data, isPending, isError } = useUsers();
 
 const filteredUsers = computed(() => {
-  const usersArray = data.value?.users || [];
+  const usersArray = Array.isArray(data.value?.users) ? data.value.users : [];
   const keyword = search.value.trim().toLowerCase();
   if (!keyword) return usersArray;
   return usersArray.filter((user) => {
     const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
     return (
-      fullName.includes(keyword) ||
-      user.email.toLowerCase().includes(keyword)
+      fullName.includes(keyword) || user.email.toLowerCase().includes(keyword)
     );
   });
 });
@@ -63,12 +62,8 @@ const viewUser = (id: string | number) => {
           />
         </div>
 
-        <div v-if="isPending" class="loading-state">
-          Loading users...
-        </div>
-        <div v-else-if="isError" class="error-state">
-          Error loading users.
-        </div>
+        <div v-if="isPending" class="loading-state">Loading users...</div>
+        <div v-else-if="isError" class="error-state">Error loading users.</div>
         <DataTable
           v-else
           :value="filteredUsers"

@@ -10,7 +10,7 @@ import { useUserDetail } from '../queries/user.queries';
 const route = useRoute();
 const router = useRouter();
 
-const userId = computed(() => String(route.params.id ?? 'Unknown'));
+const userId = computed(() => Number(route.params.id ?? 0));
 
 const { data: selectedUser, isPending, isError, error } = useUserDetail(userId);
 

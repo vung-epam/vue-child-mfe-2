@@ -21,7 +21,6 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       vue(),
-      vue(),
       vueJsx(),
       vueDevTools(),
       vitePluginSingleSpa({

@@ -42,6 +42,7 @@ const vueLifecycles = singleSpaVue({
 const mountVue = () => {
   const app = createApp(App, { theme: { darkMode: false, locale: 'mock' } });
   app.use(router);
+  app.use(pinia);
   app.use(PrimeVue, { theme: { preset: Aura } });
   app.use(VueQueryPlugin, { queryClient });
   app.use(

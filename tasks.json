@@ -1,0 +1,54 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start vue-microfrontend (child)",
+      "type": "shell",
+      "command": "pnpm install && pnpm dev",
+      "options": {
+        "cwd": "${workspaceFolder}/vu-nguyen/micro-frontend/vue-microfrontend"
+      },
+      "isBackground": true,
+      "presentation": {
+        "group": "microfrontend-split"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Start shared-microfrontend (child)",
+      "type": "shell",
+      "command": "pnpm install && pnpm dev",
+      "options": {
+        "cwd": "${workspaceFolder}/vu-nguyen/micro-frontend/shared-mfe"
+      },
+      "isBackground": true,
+      "presentation": {
+        "group": "microfrontend-split"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Start Root Config",
+      "type": "shell",
+      "command": "pnpm install && pnpm start",
+      "options": {
+        "cwd": "${workspaceFolder}/vu-nguyen/micro-frontend/root"
+      },
+      "isBackground": true,
+      "presentation": {
+        "group": "microfrontend-split"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Start All Microfrontends",
+      "dependsOn": [
+        "Start Root Config",
+        "Start vue-microfrontend (child)",
+        "Start shared-microfrontend (child)"
+      ],
+      "dependsOrder": "parallel",
+      "problemMatcher": []
+    }
+  ]
+}

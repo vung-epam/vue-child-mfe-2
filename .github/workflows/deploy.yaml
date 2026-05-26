@@ -1,7 +1,7 @@
 name: Vu - Vue MFE Child 2 Deploy
 on:
   push:
-    branches: [master]
+    branches: [main]
 permissions:
   contents: write
 jobs:

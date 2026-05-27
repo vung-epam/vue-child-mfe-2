@@ -13,6 +13,9 @@ import { queryClient } from './shared/plugins/queryClient.ts';
 
 const pinia = createPinia();
 
+const SentryClient = Sentry.getClient();
+const isReplayActive = SentryClient?.getIntegrationByName?.('Replay');
+
 const vueLifecycles = singleSpaVue({
   createApp,
   appOptions: {
@@ -32,6 +35,7 @@ const vueLifecycles = singleSpaVue({
       integrations: [
         Sentry.browserTracingIntegration({ router }),
         Sentry.replayIntegration(),
+        ...(!isReplayActive ? [Sentry.replayIntegration()] : []),
       ],
       // Performance Monitoring
       tracesSampleRate: 0.5,

@@ -6,11 +6,11 @@ import { useConfigsStore } from '../stores/config';
 const store = useConfigsStore();
 const router = useRouter();
 const items = [
-  { label: 'Home', icon: 'pi pi-home', command: () => router.push('/') },
+  { label: 'Home', icon: 'pi pi-home', command: () => router.push('/shared') },
   {
     label: 'User List',
     icon: 'pi pi-users',
-    command: () => router.push('/user/list'),
+    command: () => router.push('shared/user/list'),
   },
 ];
 </script>

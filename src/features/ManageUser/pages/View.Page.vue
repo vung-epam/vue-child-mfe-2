@@ -1,16 +1,38 @@
 <script setup lang="ts">
+import * as Sentry from '@sentry/vue';
 import Button from 'primevue/button';
 import Card from 'primevue/card';
 import Tag from 'primevue/tag';
 import Toolbar from 'primevue/toolbar';
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useUserDetail } from '../queries/user.queries';
 
 const route = useRoute();
 const router = useRouter();
 
-const userId = computed(() => Number(route.params.id ?? 0));
+const rawUserId = computed(() => route.params.id);
+const validationError = computed(() => {
+  if (
+    rawUserId.value === undefined ||
+    rawUserId.value === null ||
+    rawUserId.value === ''
+  ) {
+    return 'User id is required in the URL.';
+  }
+
+  const parsedId = Number(rawUserId.value);
+
+  if (!Number.isInteger(parsedId) || parsedId <= 0) {
+    return 'User id must be a positive integer in the URL.';
+  }
+
+  return '';
+});
+
+const userId = computed(() =>
+  validationError.value ? 0 : Number(rawUserId.value),
+);
 
 const { data: selectedUser, isPending, isError, error } = useUserDetail(userId);
 
@@ -53,9 +75,49 @@ const userFullName = computed(() => {
   return `${firstName} ${lastName}`;
 });
 
+const lastCapturedErrorKey = ref('');
+
 const goBack = () => {
   router.push({ name: 'list-user' });
 };
+
+const triggerUnhandledError = () => {
+  throw new Error('Unhandled error demo: button click failed.');
+};
+
+const apiGetErrorMessage = computed(() => {
+  if (!isError.value) return '';
+  if (error.value instanceof Error && error.value.message) {
+    return error.value.message;
+  }
+
+  return `Failed to fetch user with id ${userId.value}.`;
+});
+
+watch(
+  () => [isError.value, error.value, userId.value],
+  ([hasError, currentError, currentUserId]) => {
+    if (!hasError) return;
+
+    const message =
+      currentError instanceof Error
+        ? currentError.message
+        : `Failed to fetch user with id ${currentUserId}.`;
+    const errorKey = `${currentUserId}:${message}`;
+
+    if (lastCapturedErrorKey.value === errorKey) return;
+
+    lastCapturedErrorKey.value = errorKey;
+    const capturedError =
+      currentError instanceof Error ? currentError : new Error(message);
+
+    Sentry.captureException(capturedError, {
+      tags: { feature: 'ManageUser', page: 'View', errorType: 'api-get' },
+      extra: { userId: currentUserId, handled: true },
+    });
+  },
+  { immediate: false },
+);
 </script>
 
 <template>
@@ -65,16 +127,28 @@ const goBack = () => {
         <div class="page-title">User Profile</div>
       </template>
       <template #end>
-        <Button label="Back to list" text @click="goBack" />
+        <div class="toolbar-actions">
+          <Button
+            label="Trigger Unhandled Error"
+            severity="danger"
+            @click="triggerUnhandledError"
+          />
+
+          <Button label="Back to list" text @click="goBack" />
+        </div>
       </template>
     </Toolbar>
 
-    <div v-if="isPending" class="loading-container">
+    <div v-if="validationError" class="error-container">
+      <p>{{ validationError }}</p>
+    </div>
+
+    <div v-else-if="isPending" class="loading-container">
       <p>Loading user data...</p>
     </div>
 
     <div v-else-if="isError" class="error-container">
-      <p>{{ error?.message }}</p>
+      <p>{{ apiGetErrorMessage }}</p>
     </div>
 
     <div v-else-if="selectedUser" class="content">
@@ -172,6 +246,12 @@ const goBack = () => {
   font-size: 28px;
   font-weight: 700;
   color: var(--p-text-color);
+}
+
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 /* Content */

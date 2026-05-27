@@ -29,6 +29,15 @@ const vueLifecycles = singleSpaVue({
       app,
       dsn: 'https://0d344f744e0f6d6337d4d5348ab9a169@o4511460243472384.ingest.us.sentry.io/4511460269359104',
       sendDefaultPii: true,
+      integrations: [
+        Sentry.browserTracingIntegration({ router }),
+        Sentry.replayIntegration(),
+      ],
+      // Performance Monitoring
+      tracesSampleRate: 0.5,
+      // Session Replay
+      replaysSessionSampleRate: 0.1,
+      replaysOnErrorSampleRate: 1.0,
     });
     app.use(router);
     app.use(pinia);
@@ -53,6 +62,15 @@ const mountVue = () => {
     app,
     dsn: 'https://0d344f744e0f6d6337d4d5348ab9a169@o4511460243472384.ingest.us.sentry.io/4511460269359104',
     sendDefaultPii: true,
+    integrations: [
+      Sentry.browserTracingIntegration({ router }),
+      Sentry.replayIntegration(),
+    ],
+    // Performance Monitoring
+    tracesSampleRate: 0.5,
+    // Session Replay
+    replaysSessionSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1.0,
   });
   app.use(router);
   app.use(pinia);

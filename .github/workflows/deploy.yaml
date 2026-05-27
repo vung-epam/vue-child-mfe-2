@@ -16,6 +16,8 @@ jobs:
       - run: npm run build
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      - name: Remove sourcemaps before deploy
+        run: find dist -name "*.map" -type f -delete
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:

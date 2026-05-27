@@ -1,20 +1,20 @@
 import { authGuard } from '@auth0/auth0-vue';
 import { createRouter, createWebHistory } from 'vue-router';
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory('/'),
   routes: [
     {
-      path: '/',
+      path: '/shared',
       name: 'home',
       component: () => import('../features/ManageUser/pages/Home.page.vue'),
     },
     {
-      path: '/test',
+      path: '/shared/test',
       name: 'test',
       component: () => import('../features/ManageUser/pages/Test.Page.vue'),
     },
     {
-      path: '/user',
+      path: '/shared/user',
       beforeEnter: authGuard,
       children: [
         {

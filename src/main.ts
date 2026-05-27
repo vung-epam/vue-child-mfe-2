@@ -13,8 +13,24 @@ import { queryClient } from './shared/plugins/queryClient.ts';
 
 const pinia = createPinia();
 
-const SentryClient = Sentry.getClient();
-const isReplayActive = SentryClient?.getIntegrationByName?.('Replay');
+const initSentryOnce = (app: ReturnType<typeof createApp>) => {
+  if (Sentry.getClient()) return;
+
+  Sentry.init({
+    app,
+    dsn: 'https://0d344f744e0f6d6337d4d5348ab9a169@o4511460243472384.ingest.us.sentry.io/4511460269359104',
+    sendDefaultPii: true,
+    integrations: [
+      Sentry.browserTracingIntegration({ router }),
+      Sentry.replayIntegration(),
+    ],
+    // Performance Monitoring
+    tracesSampleRate: 0.5,
+    // Session Replay
+    replaysSessionSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1.0,
+  });
+};
 
 const vueLifecycles = singleSpaVue({
   createApp,
@@ -28,21 +44,7 @@ const vueLifecycles = singleSpaVue({
     serverPort: 4103,
   },
   handleInstance: (app) => {
-    Sentry.init({
-      app,
-      dsn: 'https://0d344f744e0f6d6337d4d5348ab9a169@o4511460243472384.ingest.us.sentry.io/4511460269359104',
-      sendDefaultPii: true,
-      integrations: [
-        Sentry.browserTracingIntegration({ router }),
-        Sentry.replayIntegration(),
-        ...(!isReplayActive ? [Sentry.replayIntegration()] : []),
-      ],
-      // Performance Monitoring
-      tracesSampleRate: 0.5,
-      // Session Replay
-      replaysSessionSampleRate: 0.1,
-      replaysOnErrorSampleRate: 1.0,
-    });
+    initSentryOnce(app);
     app.use(router);
     app.use(pinia);
     app.use(PrimeVue, { theme: { preset: Aura } });
@@ -62,20 +64,7 @@ const vueLifecycles = singleSpaVue({
 
 const mountVue = () => {
   const app = createApp(App, { theme: { darkMode: false, locale: 'mock' } });
-  Sentry.init({
-    app,
-    dsn: 'https://0d344f744e0f6d6337d4d5348ab9a169@o4511460243472384.ingest.us.sentry.io/4511460269359104',
-    sendDefaultPii: true,
-    integrations: [
-      Sentry.browserTracingIntegration({ router }),
-      Sentry.replayIntegration(),
-    ],
-    // Performance Monitoring
-    tracesSampleRate: 0.5,
-    // Session Replay
-    replaysSessionSampleRate: 0.1,
-    replaysOnErrorSampleRate: 1.0,
-  });
+  initSentryOnce(app);
   app.use(router);
   app.use(pinia);
   pinia.use(createSentryPiniaPlugin());

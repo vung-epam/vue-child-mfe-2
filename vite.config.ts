@@ -62,6 +62,7 @@ export default defineConfig(({ mode }) => {
     },
 
     build: {
+      sourcemap: true,
       rollupOptions: {
         external: ['single-spa'],
         output: {

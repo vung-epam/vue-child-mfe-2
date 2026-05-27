@@ -5,7 +5,7 @@ const router = createRouter({
   routes: [
     {
       path: '/shared',
-      name: 'shared home',
+      name: 'shared-home',
       component: () => import('../features/ManageUser/pages/Home.page.vue'),
     },
     {

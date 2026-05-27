@@ -1,6 +1,7 @@
 import { fileURLToPath, URL } from 'node:url';
 
 /// <reference types="vite/client" />
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import autoprefixer from 'autoprefixer';
@@ -28,6 +29,11 @@ export default defineConfig(({ mode }) => {
         spaEntryPoints: 'src/main.ts',
       }),
       cssInjectedByJsPlugin(),
+      sentryVitePlugin({
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+        org: 'epam-0v',
+        project: 'javascript-vue',
+      }),
     ],
     css: {
       postcss: {

@@ -15,7 +15,8 @@ permissions:
   pull-requests: read
 
 network: defaults
-
+engine: copilot
+model: gpt-4.1-mini
 tools:
   github:
     # If in a public repo, setting `lockdown: false` allows
@@ -28,7 +29,7 @@ safe-outputs:
   mentions: false
   allowed-github-references: []
   create-issue:
-    title-prefix: "[repo-status] "
+    title-prefix: '[repo-status] '
     labels: [report, daily-status]
     close-older-issues: true
 source: githubnext/agentics/workflows/repo-status.md@298f992955146a6731d380a9de808e17861708e5

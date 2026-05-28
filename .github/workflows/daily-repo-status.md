@@ -15,8 +15,9 @@ permissions:
   pull-requests: read
 
 network: defaults
-engine: copilot
-model: gpt-4.1-mini
+engine:
+  id: copilot
+  model: gpt-4.1-mini
 tools:
   github:
     # If in a public repo, setting `lockdown: false` allows

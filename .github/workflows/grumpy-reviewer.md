@@ -11,7 +11,7 @@ permissions:
   pull-requests: read
 engine:
   id: copilot
-  model: gpt-5-mini
+  model: gpt-4.1-mini
 tools:
   cache-memory: true
   github:

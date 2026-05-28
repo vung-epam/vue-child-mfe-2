@@ -17,8 +17,9 @@ const {
   user
 } = useAuth0();
 
-const name = computed(() => user.value?.name?.slice(0, 4) || '?');
-const email = computed(() => user.value?.email);
+const displayName = computed(() => user.value?.name || 'Unknown user');
+const displayEmail = computed(() => user.value?.email || 'No email');
+const avatarLabel = computed(() => user.value?.name?.charAt(0) || '?');
 
 const configsStore = useConfigsStore();
 const signup = () => {
@@ -54,18 +55,18 @@ const logout = () => {
         <template #content>
           <div v-if="!isAuthenticated" class="content">
             <p class="subtitle">
-              Create an account or continue with your login to manage users.
+              Create an account or log in to manage users.
             </p>
           </div>
           <div v-else class="profile">
             <Avatar
-              :label="user?.name?.charAt(0) || '?'"
+              :label="avatarLabel"
               shape="circle"
               size="large"
             />
             <div class="profile-info">
-              <span class="name">{{ name || 'Unknown user' }}</span>
-              <span class="email">{{ email || 'No email' }}</span>
+              <span class="name">{{ displayName }}</span>
+              <span class="email">{{ displayEmail }}</span>
             </div>
           </div>
         </template>
@@ -83,6 +84,7 @@ const logout = () => {
       <Card class="home-card">
         <template #content>
           <template v-if="isAuthenticated">
+            <p class="subtitle">Theme preference</p>
             <div class="toggle-container">
               <ToggleSwitch v-model="configsStore.configs.darkMode" />
               <span class="toggle-label">
@@ -142,15 +144,24 @@ const logout = () => {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
 }
 
 .name {
   font-weight: 600;
+  max-width: 320px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .email {
   color: var(--p-text-muted-color, #6b7280);
   font-size: 0.95rem;
+  max-width: 320px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .actions {
@@ -170,6 +181,7 @@ const logout = () => {
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-top: 8px;
 }
 
 .toggle-label {

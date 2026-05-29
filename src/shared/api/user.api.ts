@@ -24,13 +24,12 @@ export interface UserDetail {
   };
 }
 
-export interface UserListResponse extends ListResponse<UserDetail> { }
+export interface UserListResponse extends ListResponse<UserDetail> {}
 
 export const fetchUsers = async (): Promise<UserListResponse> => {
   const { data } = await apiClient.get<UserListResponse>('/users');
   return data;
 };
-
 
 export const fetchUserById = async (id: number): Promise<UserDetail> => {
   const { data } = await apiClient.get<UserDetail>(`/users/${id}`);
@@ -43,7 +42,20 @@ export interface CreateUserPayload {
   email: string;
 }
 
-export const createUser = async (payload: CreateUserPayload): Promise<UserDetail> => {
+export const createUser = async (
+  payload: CreateUserPayload,
+): Promise<UserDetail> => {
   const { data } = await apiClient.post<UserDetail>('/users/add', payload);
+  return data;
+};
+
+export type CreateUsersBulkPayload = CreateUserPayload[];
+
+export const createUsersBulk = async (
+  payload: CreateUsersBulkPayload,
+): Promise<UserDetail[]> => {
+  const { data } = await apiClient.post<UserDetail[]>('/users/add/bulk', {
+    users: payload,
+  });
   return data;
 };

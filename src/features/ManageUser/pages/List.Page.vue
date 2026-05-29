@@ -30,6 +30,10 @@ const createUser = () => {
   router.push({ name: 'create-user' });
 };
 
+const bulkCreateUsers = () => {
+  router.push({ name: 'bulk-user' });
+};
+
 const viewUser = (id: string | number) => {
   router.push({ name: 'view-user', params: { id: String(id) } });
 };
@@ -45,7 +49,10 @@ const viewUser = (id: string | number) => {
         </div>
       </template>
       <template #end>
-        <Button label="Create user" @click="createUser" />
+        <div class="toolbar-actions">
+          <Button label="Bulk create" text @click="bulkCreateUsers" />
+          <Button label="Create user" @click="createUser" />
+        </div>
       </template>
     </Toolbar>
 
@@ -119,6 +126,12 @@ const viewUser = (id: string | number) => {
 
 .content-card {
   border-radius: 18px;
+}
+
+.toolbar-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .table-header {

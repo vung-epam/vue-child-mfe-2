@@ -34,6 +34,11 @@ const router = createRouter({
             import('../features/ManageUser/pages/Create.Page.vue'),
         },
         {
+          path: 'bulk',
+          name: 'bulk-user',
+          component: () => import('../features/ManageUser/pages/Bulk.Page.vue'),
+        },
+        {
           path: ':id',
           name: 'view-user',
           component: () => import('../features/ManageUser/pages/View.Page.vue'),
